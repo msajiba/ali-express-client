@@ -6,29 +6,65 @@ import useCart from '../../hooks/useCart';
 import Cart from '../Shared/Cart';
 import ProductShow from './ProductShow';
 import {useNavigate} from 'react-router-dom';
+import auth from '../../firebase_init';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { fetchSignInMethodsForEmail } from 'firebase/auth';
+import './Home.css';
 
 const Home = () => {
 
-    const [products, setProducts] = useState([]);
-    const [cartItem, setCartItem] = useState({});
+    const [user] = useAuthState(auth);
     const navigate =  useNavigate();
 
+    const [products, setProducts] = useState([]);
+    const [cartItem, setCartItem] = useState({});
+    const [pageCount, setPageCount] = useState(0);
+    const [page, setPage] = useState(0);
+    const [size, setSize] = useState(5);
 
+
+
+    //PRODUCTS GET
     useEffect(()=>{
         const getProducts = async() => {
-            const url = 'http://localhost:5000/products'
+            const url = `http://localhost:5000/products?page=${page}&size=${size}`
             const {data} = await axios.get(url)
             setProducts(data);
         }
         getProducts();
+    }, [page, size]);
+
+
+    //PRODUCT COUNT 
+    useEffect(()=>{
+        const getProductCount = async() => {
+            const url = 'http://localhost:5000/productCount';
+            const {data} = await axios.get(url);
+            const {count} = data;
+            const pages = Math.ceil(count/6);
+            setPageCount(pages);
+        };
+        getProductCount();
     }, []);
 
+
+  
+
     const addProductHandler = async(id) => {
-        const selectedItem = products.find(product => product._id === id);
-        const url = 'http://localhost:5000/selectitem'
-        const res = await axios.post(url, selectedItem);
-        toast.success('Product add successful');
-        setCartItem(selectedItem);
+        const selectedItem = products.find(p => p._id === id);
+        const email = user?.email;
+    
+        const product = Object.assign(selectedItem,{email});
+
+        if(user){
+            const url = 'http://localhost:5000/selectitem';
+            const res = await axios.post(url, product);
+            toast.success('Product add successful');
+            setCartItem(selectedItem);
+        }
+        else{
+          return  navigate('/login');
+        }
     };
 
 
@@ -58,6 +94,29 @@ const Home = () => {
                                  </button> 
                             </Cart>
                      </Col>
+                </Row>
+
+                <Row>
+                    <Col md='9' className='text-center my-5'>
+                     
+                        {
+                            [...Array(pageCount).keys()]
+                            .map(number => <button
+                                                className={page === number ? 'bg-danger text-white' : 'mx-2'}
+                                                onClick={()=>setPage(number)}
+                                                > {number +1} 
+                                            </button>)
+                        } 
+                       
+                        <select onChange={(e)=> setSize(e.target.value)} className='mx-2' >
+                            <option value="5" selected>5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                        
+
+                    </Col>
                 </Row>
             </Container>
         </>

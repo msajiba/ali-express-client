@@ -5,6 +5,7 @@ import auth from '../../firebase_init';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import Loading from '../Shared/Loading';
 import SocialLogin from './SocialLogin';
+import axios from 'axios';
 
 const Login = () => {
 
@@ -27,16 +28,24 @@ const Login = () => {
     }
 
     if(user){
-        navigate(from, {replace : true});
+        // navigate(from, {replace : true});
     };
 
 
 
-    const handleFormLogin = e =>{
+    const handleFormLogin = async(e) =>{
+
         e.preventDefault();
-        signInWithEmailAndPassword(email, password);
+       await signInWithEmailAndPassword(email, password);
+
+        const {data} = await axios.post('http://localhost:5000/login', {email});
+        localStorage.setItem('accessToken', data.accessToken);
+        navigate(from, {replace : true});
         e.target.reset();
-    }
+    };
+
+
+
     return (
         <>
             <div className="w-75 mx-auto mt-5 py-5 shadow px-5">

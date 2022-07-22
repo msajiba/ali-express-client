@@ -2,7 +2,7 @@ import React from 'react';
 import {Button} from 'react-bootstrap';
 
 const ProductShow = ({product, addProductHandler}) => {
-    const {img, name,  price, _id} = product;
+    const {img, name,  price, _id, productId} = product;
     return (
         <>
             <div className="border shadow my-2 rounded p-2">
