@@ -20,16 +20,16 @@ const Cart = ({children, cartItem,orderItem}) => {
         const getProducts = async() => {
             const email = user?.email;
             const url = `http://localhost:5000/selectitem?email=${email}`;
+            
            try{
-            const {data} = await axiosPrivate.get(url)
-            setSelectItem(data)
+                const {data} = await axiosPrivate.get(url)
+                setSelectItem(data)
            }
            catch(error){
-            console.log(error.message)
-            if(error.response.status === 401 || error.response.status === 403){
-                signOut(auth);
-                navigate('/login');
-            }
+                if(error.response.status === 401 || error.response.status === 403){
+                    signOut(auth);
+                    navigate('/login');
+                }
            }
 
         };

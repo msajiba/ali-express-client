@@ -27,8 +27,17 @@ const Order = () => {
         const getProducts = async() => {
             const email = user?.email;
             const url = `http://localhost:5000/selectitem?email=${email}&page=${page}&size=${size}`;
-            const {data} = await axiosPrivate.get(url)
-            setOrderItem(data);
+            try{
+                const {data} = await axiosPrivate.get(url)
+                setOrderItem(data);
+            }
+            catch(error){
+                if(error.response.status === 401 || error.response.status === 403){
+                    signOut(auth);
+                    navigate('/login');
+                }
+            }
+           
         }
         getProducts();
 
