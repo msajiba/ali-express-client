@@ -19,8 +19,8 @@ const Cart = ({children, cartItem,orderItem}) => {
 
         const getProducts = async() => {
             const email = user?.email;
-            const url = `http://localhost:5000/selectitem?email=${email}`;
-            
+            const url = `https://protected-dawn-66498.herokuapp.com/selectitem?email=${email}`;
+
            try{
                 const {data} = await axiosPrivate.get(url)
                 setSelectItem(data)

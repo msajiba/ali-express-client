@@ -10,6 +10,7 @@ import auth from '../../firebase_init';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { fetchSignInMethodsForEmail } from 'firebase/auth';
 import './Home.css';
+import axiosPrivate from '../../api/axiosPrivate';
 
 const Home = () => {
 
@@ -27,8 +28,8 @@ const Home = () => {
     //PRODUCTS GET
     useEffect(()=>{
         const getProducts = async() => {
-            const url = `http://localhost:5000/products?page=${page}&size=${size}`
-            const {data} = await axios.get(url)
+            const url = `https://protected-dawn-66498.herokuapp.com/products?page=${page}&size=${size}`
+            const {data} = await axiosPrivate.get(url)
             setProducts(data);
         }
         getProducts();
@@ -38,8 +39,8 @@ const Home = () => {
     //PRODUCT COUNT 
     useEffect(()=>{
         const getProductCount = async() => {
-            const url = 'http://localhost:5000/productCount';
-            const {data} = await axios.get(url);
+            const url = 'https://protected-dawn-66498.herokuapp.com/productCount';
+            const {data} = await axiosPrivate.get(url);
             const {count} = data;
             const pages = Math.ceil(count/6);
             setPageCount(pages);
@@ -57,8 +58,8 @@ const Home = () => {
         const product = Object.assign(selectedItem,{email});
 
         if(user){
-            const url = 'http://localhost:5000/selectitem';
-            const res = await axios.post(url, product);
+            const url = 'https://protected-dawn-66498.herokuapp.com/selectitem';
+            const res = await axiosPrivate.post(url, product);
             toast.success('Product add successful');
             setCartItem(selectedItem);
         }
@@ -102,6 +103,7 @@ const Home = () => {
                         {
                             [...Array(pageCount).keys()]
                             .map(number => <button
+                                                key={number}
                                                 className={page === number ? 'bg-danger text-white' : 'mx-2'}
                                                 onClick={()=>setPage(number)}
                                                 > {number +1} 

@@ -8,7 +8,7 @@ const useCart = ({cartItem}) => {
     useEffect(()=>{
 
         const getProducts = async() => {
-            const url = 'http://localhost:5000/selectitem'
+            const url = 'https://protected-dawn-66498.herokuapp.com/selectitem'
             const {data} = await axios.get(url)
             setSelectItem(data);
         }

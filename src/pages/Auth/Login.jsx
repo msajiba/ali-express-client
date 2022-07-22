@@ -6,6 +6,7 @@ import {Link, useLocation, useNavigate} from 'react-router-dom';
 import Loading from '../Shared/Loading';
 import SocialLogin from './SocialLogin';
 import axios from 'axios';
+import axiosPrivate from '../../api/axiosPrivate';
 
 const Login = () => {
 
@@ -38,7 +39,7 @@ const Login = () => {
         e.preventDefault();
        await signInWithEmailAndPassword(email, password);
 
-        const {data} = await axios.post('http://localhost:5000/login', {email});
+        const {data} = await axiosPrivate.post('https://protected-dawn-66498.herokuapp.com/login', {email});
         localStorage.setItem('accessToken', data.accessToken);
         navigate(from, {replace : true});
         e.target.reset();

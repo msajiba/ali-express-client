@@ -18,7 +18,7 @@ const ProductAdd = () => {
 
         const product = {img, name, price};
 
-        const url = 'http://localhost:5000/product'
+        const url = 'https://protected-dawn-66498.herokuapp.com/product'
         const res = await axios.post(url, product);
         toast.success('Product add successful');
         e.target.reset();
